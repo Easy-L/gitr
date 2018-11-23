@@ -1,0 +1,387 @@
+<p-growl [value]="msgs"></p-growl>
+<div class="ui-g">
+  <div class="ui-g-12">
+    <div class="ui-g-2">
+      <p-panel>
+        <p-header>
+          <h3>数据集类型</h3>
+        </p-header>
+        <button pButton type="button" icon="fa-plus" label="新增" class="ui-button-info" (click)="dialog(false)"></button>
+        <button pButton type="button" icon="fa-list" label="编辑" class="ui-button-success" (click)="dialog(true)"></button>
+        <button pButton type="button" icon="fa-trash-o" label="删除" class="ui-button-danger" (click)="deleteSetClass()"></button>
+          <div class="ui-g-12">
+            <p-dropdown [options]="items"
+                        [(ngModel)]="select"
+                        [style]="{'width':'200px'}">
+            </p-dropdown>
+            <div class="ui-inputgroup"
+                 style="margin-top: 10px;margin-bottom:10px">
+              <input type="text"
+                     style="width: 175px"
+                     pInputText placeholder="请输入数据集名称" [(ngModel)]="searchsettreeconditon" >
+              <button pButton type="button" icon="fa-superpowers" class="ui-button-secondary" (click)="onSetsearchconditon()"></button>
+            </div>
+          </div>
+
+        <p-tree class="ui-fluid"
+                [value]="metaSetClassTree"
+                [style]="{'height':'700px'}"
+                (onNodeExpand)="onNodeExpand($event)"
+                selectionMode="single"
+                (onNodeSelect)="onNodeSelect($event)"
+                [(selection)]="selectedMetaSetClass">
+        </p-tree>
+      </p-panel>
+    </div>
+    <div class="ui-g-8">
+      <p-panel>
+        <p-header>
+          <h3>数据集类型</h3>
+        </p-header>
+        <button pButton type="button" icon="fa-list" label="提交" class="ui-button-success" (click)="saveMetaSetDescribes()"></button>
+        <button pButton type="button" icon="fa-trash-o" label="删除" class="ui-button-danger" (click)="deleteMetaDetails()"></button>
+        <div style="margin-top: 10px">
+
+          <p-table [value]="metaSetDescribes"
+                   [rows]="10"
+                   [paginator]="true"
+                   [pageLinks]="5"
+                   dataKey="id"
+                   [totalRecords]="metaSetDescribes.length"
+                   [(selection)]="selectMetaSetDescribes"
+                   selectionMode="multiple"
+                   [rowsPerPageOptions]="[10,20,30]">
+
+
+            <ng-template pTemplate="header" >
+              <tr>
+                <th style="width: 2.25em">
+                  <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                </th>
+                <th>序号</th>
+                <th>元数据编码</th>
+                <th>名称</th>
+                <th>名称字段</th>
+                <th>数据类型</th>
+                <th>取值格式</th>
+                <th>最大值</th>
+                <th>最小值</th>
+                <th>关键元数据</th>
+                <th>数据验证方式</th>
+                <th>加密</th>
+                <th>列名</th>
+                <th>列</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-desc let-rowIndex="rowIndex">
+              <tr [pSelectableRow]="desc" >
+                <td>
+                  <p-tableCheckbox [value]="desc"></p-tableCheckbox>
+                </td>
+                <td>{{rowIndex+1}}</td>
+                <td>{{desc.metaDataDetail.metacode}}</td>
+                <td>{{desc.metaDataDetail.metaname}}</td>
+                <td>{{desc.metaDataDetail.typecode}}</td>
+                <td>{{desc.metaDataDetail.symbolcode}}</td>
+                <td>{{desc.metaDataDetail.dataformat}}</td>
+                <td>{{desc.metaDataDetail.maxrange}}</td>
+                <td>{{desc.metaDataDetail.minrange}}</td>
+                <td>{{desc.metadatakey}}</td>
+                <td>{{desc.dataverfify}}</td>
+                <!--<td>{{desc.encrycode}}</td>-->
+
+                <td pEditableColumn>
+                  <p-cellEditor>
+                    <ng-template pTemplate="input">
+                      <input type="text" [(ngModel)]="desc.encrycode">
+                    </ng-template>
+                    <ng-template pTemplate="output">
+                      {{desc.encrycode}}
+                    </ng-template>
+                  </p-cellEditor>
+                </td>
+
+                <td>{{desc.columncode}}</td>
+                <td>{{desc.columnname}}</td>
+              </tr>
+            </ng-template>
+
+            <ng-template pTemplate="paginatorleft">
+            </ng-template>
+            <ng-template pTemplate="paginatorright">
+              总共{{metaSetDescribes.length}}条记录
+            </ng-template>
+
+            <ng-template pTemplate="emptymessage" >
+              <tr >
+                <td [attr.colspan]="14">
+                  没有数据
+                </td>
+
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </p-panel>
+    </div>
+    <div class="ui-g-2" style="margin: auto">
+      <!--右侧元数据树-->
+      <p-panel>
+        <p-header>
+          <h3>选择元数据</h3>
+        </p-header>
+        <!-- 搜索框 -->
+        <div class="ui-inputgroup"
+             style="margin-top: 10px;margin-bottom:10px">
+          <input type="text"
+                 style="width: 200px"
+                 pInputText placeholder="请输入元数据名称" [(ngModel)]="searchconditon" >
+          <button pButton type="button" icon="fa-superpowers" class="ui-button-secondary" (click)="onsearchconditon()"></button>
+        </div>
+        <p-tree class="ui-fluid" [value]="metadatatree"
+                [style]="{'height':'700px'}"
+                selectionMode="single"
+                [(selection)]="selectedMetadataClass"
+                (onNodeExpand)="onNodeExpandMetaDataClass($event)"
+                (onNodeSelect)="onNodeMetaDataClassSelect($event)">
+        </p-tree>
+      </p-panel>
+    </div>
+  </div>
+</div>
+
+<p-dialog [(header)]="header" [(visible)]="displaySetClassDialog"
+          [responsive]="true" showEffect="fade" [modal]="true"
+          [width]="800" [height]="650"
+          (onHide)="onHide($event)">
+  <form [formGroup]="metasetclassForm" >
+    <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid">
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-3">
+          <label>
+            父类级别：
+          </label>
+        </div>
+        <div class="ui-grid-col-5">
+          <p-dropdown formControlName="parentid"
+                      [options]="metasetparent"
+                      [autoDisplayFirst]=false
+                      showClear="true"
+                      [style]="{'width':'150px'}"  [filter]="true"
+                      [scrollHeight]="400"
+                      [(ngModel)]="metasetclasstemp.parentid">
+            <ng-template let-metaset pTemplate="selectedItem">
+              <img src="" style="width:16px;vertical-align:middle" />
+              <span style="vertical-align:middle">{{metaset.label}}</span>
+            </ng-template>
+          </p-dropdown>
+        </div>
+      </div>
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-3">
+          <label>
+            数据集分类：
+          </label>
+        </div>
+        <div class="ui-grid-col-5">
+          <input pInputText type="hidden" formControlName="id" [(ngModel)]="metasetclasstemp.id" />
+          <p-dropdown [options]="items"
+                      formControlName="typecode"
+                      [(ngModel)]="metasetclasstemp.typecode"
+                      [style]="{'width':'200px'}">
+          </p-dropdown>
+          <!--<input pInputText formControlName="typecode"-->
+                 <!--[(ngModel)]="metasetclasstemp.typecode" >-->
+        </div>
+      </div>
+
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-3">
+          <label>
+            数据集编码：
+          </label>
+        </div>
+        <div class="ui-grid-col-5">
+          <input pInputText formControlName="setcode" [(ngModel)]="metasetclasstemp.setcode" placeholder="必填"/>
+        </div>
+      </div>
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-3">
+          <label>
+            数据集名称：
+          </label>
+        </div>
+        <div class="ui-grid-col-5">
+          <input pInputText formControlName="setname" [(ngModel)]="metasetclasstemp.setname" placeholder="必填"/>
+        </div>
+      </div>
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-3">
+          <label>
+            使用途径：
+          </label>
+        </div>
+        <div class="ui-grid-col-5">
+          <p-radioButton name="usegroup" formControlName="setuse" value="0"
+                         label="存储" [(ngModel)]="metasetclasstemp.setuse"></p-radioButton>
+          <p-radioButton name="usegroup" formControlName="setuse" value="1"
+                         label="交互" [(ngModel)]="metasetclasstemp.setuse"></p-radioButton>
+          <p-radioButton name="usegroup" formControlName="setuse" value="2"
+                         label="存储与交互" [(ngModel)]="metasetclasstemp.setuse"></p-radioButton>
+        </div>
+      </div>
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-3">
+          <label>
+            数据集类型：
+          </label>
+        </div>
+        <div class="ui-grid-col-5">
+          <p-radioButton name="settypegroup" formControlName="settype" value="0"
+                         label="内部数据集" [(ngModel)]="metasetclasstemp.settype"></p-radioButton>
+          <p-radioButton name="settypegroup" formControlName="settype" value="1"
+                         label="公共数据集" [(ngModel)]="metasetclasstemp.settype"></p-radioButton>
+        </div>
+      </div>
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-3">
+          <label>
+            物理表名：
+          </label>
+        </div>
+        <div class="ui-grid-col-5">
+          <input pInputText formControlName="tablename" [(ngModel)]="metasetclasstemp.tablename" />
+        </div>
+      </div>
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-3">
+          <label>
+            类别描述：
+          </label>
+        </div>
+        <div class="ui-grid-col-5">
+          <textarea [rows]="5" [cols]="30" pInputTextarea autoResize="autoResize" formControlName="memo" [(ngModel)]="metasetclasstemp.memo"></textarea>
+        </div>
+      </div>
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-3">
+          <label>
+            标准体系：
+          </label>
+        </div>
+        <!--<div class="ui-grid-col-5">-->
+          <!--<input pInputText formControlName="typename" [(ngModel)]="metasetclasstemp.setname" />-->
+        <!--</div>-->
+      </div>
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-3">
+          <label>
+           启用标识：
+          </label>
+        </div>
+        <div class="ui-grid-col-5">
+          <p-radioButton name="useflaggroup" formControlName="useflag" value="0"
+                         label="停用" [(ngModel)]="metasetclasstemp.useflag"></p-radioButton>
+          <p-radioButton name="useflaggroup" formControlName="useflag" value="1"
+                         label="启用" [(ngModel)]="metasetclasstemp.useflag"></p-radioButton>
+        </div>
+      </div>
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-3">
+          <label>
+           是否加密：
+          </label>
+        </div>
+        <div class="ui-grid-col-5">
+          <p-radioButton name="encrytypegroup" formControlName="encrytype" value="0"
+                         label="不加密" [(ngModel)]="metasetclasstemp.encrytype"></p-radioButton>
+          <p-radioButton name="encrytypegroup" formControlName="encrytype" value="1"
+                         label="加密" [(ngModel)]="metasetclasstemp.encrytype"></p-radioButton>
+        </div>
+      </div>
+    </div>
+    <div class="ui-dialog-buttonpane ui-helper-clearfix">
+      <button type="button" pButton icon="fa-close" (click)="cancel()" label="取消"></button>
+      <button type="button" pButton icon="fa-check" [disabled]="!metasetclassForm.valid" (click)="saveSetClass()" label="保存"></button>
+    </div>
+  </form>
+</p-dialog>
+
+<p-confirmDialog header="删除确认"
+                 [acceptLabel]="'是'"  [rejectLabel]="'否'"
+                 icon="fa fa-question-circle" width="425"></p-confirmDialog>
+
+<p-dialog [(header)]="header" [(visible)]="displayMetaDataDetail"
+          [responsive]="true" showEffect="fade" [modal]="true"
+          [width]="1000" [height]="550"
+          (onHide)="onHide($event)">
+    <!--<button pButton type="button" icon="fa-list" label="检索" class="ui-button-success" (click)="search()"></button>-->
+    <button pButton type="button" icon="fa-trash-o" label="提交" class="ui-button-success" (click)="postMetaDataDetail()"></button>
+    <div style="margin-top: 10px">
+      <p-table #tt [value]="metadatadetails"
+               style=""
+               [rows]="10"
+               [paginator]="true"
+               [pageLinks]="5"
+               dataKey="id"
+               [globalFilterFields]="['metacode']"
+               [(selection)]="selectMetaDataDetails"
+               selectionMode="multiple">
+        <ng-template pTemplate="caption">
+          <i class="fa fa-search" style="margin:4px 4px 0 0"></i>
+          <input type="text" pInputText size="50" placeholder="请输入标识符" (input)="tt.filterGlobal($event.target.value, 'contains')" style="width:auto">
+        </ng-template>
+        <ng-template pTemplate="header" >
+          <tr>
+            <th style="width: 2.25em">
+              <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+            </th>
+            <th style="width:30px">序号</th>
+            <th>标识符</th>
+            <th>小类编码</th>
+            <th>标识符名称</th>
+            <th>标识符定义</th>
+            <th>数据格式</th>
+            <th>表示格式</th>
+            <th style="width:30px">最小值</th>
+            <th style="width:30px">最大值</th>
+            <th style="width:30px">小数位</th>
+            <th>计量单位</th>
+            <th>数据来源说明</th>
+            <th>标准编码</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-desc let-rowIndex="rowIndex">
+          <tr [pSelectableRow]="desc" >
+            <td>
+              <p-tableCheckbox [value]="desc"></p-tableCheckbox>
+            </td>
+            <td>{{rowIndex+1}}</td>
+            <td>{{desc.metacode}}</td>
+            <td>{{desc.typecode}}</td>
+            <td>{{desc.metaname}}</td>
+            <td>{{desc.metadefine}}</td>
+            <td>{{desc.symbolcode}}</td>
+            <td>{{desc.dataformat}}</td>
+            <td>{{desc.minrange}}</td>
+            <td>{{desc.maxrange}}</td>
+            <td>{{desc.prec}}</td>
+            <td>{{desc.unitmeasurement}}</td>
+            <td>{{desc.datasource}}</td>
+            <td>{{desc.standardcode}}</td>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="paginatorright">
+          总共{{metadatadetails.length}}条记录
+        </ng-template>
+        <ng-template pTemplate="emptymessage" >
+          <tr >
+            <td [attr.colspan]="14">
+              没有数据
+            </td>
+          </tr>
+        </ng-template>
+       </p-table>
+    </div>
+</p-dialog>

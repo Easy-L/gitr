@@ -1,0 +1,219 @@
+<p-growl [value]="msgs"></p-growl>
+<p-confirmDialog [acceptLabel]="'是'" [rejectLabel]="'否'"></p-confirmDialog>
+<div class="ui-g">
+  <div class="ui-g-5">
+    <p-panel>
+      <p-header ngClass="n">
+        <button pButton type="button" icon="fa-plus" label="新增" class="ui-button-info" (click)="dialog(false)"></button>
+        <button pButton type="button" icon="fa-list" label="编辑" class="ui-button-success" (click)="dialog(true)"></button>
+        <button pButton type="button" icon="fa-trash-o" label="删除" class="ui-button-danger" (click)="delete()"></button>
+        <div style="float: right">
+          数据集类型
+          <p-dropdown [options]="items" (onChange)="onChange($event)" [(ngModel)]="select" [style]="{'width':'150px'}" filter="true"></p-dropdown>
+        </div>
+      </p-header>
+      <p-dataTable [value]="basedatadescribes"
+                   selectionMode="single"
+                   [(selection)]="selectBasedatadescribe"
+                   (onRowSelect)="onRowSelect($event)"
+                   [lazy]="true"
+                   [rows]="params.pageSize"
+                   [paginator]="true"
+                   [pageLinks]="5"
+                   [rowsPerPageOptions]="[10,20,30]"
+                   [totalRecords]="params.totalRecords"
+                   (onLazyLoad)="loadLazy($event)"
+                   [emptyMessage]="'没有数据'"
+                    >
+        <p-column header="序号" [style]="{'width':'50px'}">
+          <ng-template let-rowData="rowData" pTemplate="body" let-i="rowIndex">
+            <p>{{i+1}}</p>
+          </ng-template>
+        </p-column>
+        <!--<p-column field="metaSetType.typename" header="数据集类型"></p-column>-->
+        <p-column field="basedataCode" header="标准代码"></p-column>
+        <p-column field="basedataName" header="标准代码名称"></p-column>
+        <p-column field="describe" header="修改描述"></p-column>
+      </p-dataTable>
+    </p-panel>
+  </div>
+  <div class="ui-g-7">
+    <p-panel>
+      <p-header >
+        <button pButton type="button" icon="fa-plus" label="新增" class="ui-button-info" (click)="itemDialog(false)"></button>
+        <button pButton type="button" icon="fa-list" label="编辑" class="ui-button-success" (click)="itemDialog(true)"></button>
+        <button pButton type="button" icon="fa-trash-o" label="删除" class="ui-button-danger" (click)="deleteItem()"></button>
+      </p-header>
+      <p-dataTable [value]="basedatainfos"
+                   selectionMode="single"
+                   [(selection)]="selectBasedatainfo"
+                   (onRowSelect)="onRowSelect2($event)"
+                   [rows]="params2.pageSize"
+                   [paginator]="true"
+                   [pageLinks]="5"
+                   [rowsPerPageOptions]="[10,20,30]"
+                   [totalRecords]="params2.totalRecords"
+                   [emptyMessage]="'没有数据'">
+        <p-column header="序号" [style]="{'width':'50px'}">
+          <ng-template let-rowData="rowData" pTemplate="body" let-i="rowIndex">
+            <p>{{i+1}}</p>
+          </ng-template>
+        </p-column>
+        <p-column field="itemName" header="项目名称" [style]="{'width':'40%'}"></p-column>
+        <p-column field="itemCode" header="项目代码" [style]="{'text-align':'left'}"></p-column>
+      </p-dataTable>
+    </p-panel>
+  </div>
+</div>
+<p-dialog [(header)]="header" [(visible)]="displayDialog" [responsive]="true" showEffect="fade" [modal]="true" [width]="600" [height]="420">
+  <form [formGroup]="basedatadescribeForm" (ngSubmit)="save()">
+    <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid">
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-3">
+          <label>
+            应用程序编码：
+          </label>
+        </div>
+        <div class="ui-grid-col-5">
+          <input pInputText formControlName="id" [(ngModel)]="basedatadescribeTemp.id" type="hidden"/>
+          <p-dropdown [options]="appCodeItems"  formControlName="appCode"  [(ngModel)]="basedatadescribeTemp.appCode" [style]="{'width':'150px'}" filter="true">
+
+          </p-dropdown>
+        </div>
+        <div class="ui-grid-col-4">
+        </div>
+      </div>
+
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-3">
+          <label>
+            基础数据代码ID：
+          </label>
+        </div>
+        <div class="ui-grid-col-5">
+          <input pInputText formControlName="basedataCode" [(ngModel)]="basedatadescribeTemp.basedataCode" placeholder="必填"/>
+        </div>
+        <div class="ui-grid-col-4">
+          <div class="ui-message ui-messages-error ui-corner-all" *ngIf="!basedatadescribeForm.controls['basedataCode'].valid && basedatadescribeForm.controls['basedataName'].dirty">
+            <i class="fa fa-close"></i>
+            请输入基础数据代码ID
+          </div>
+        </div>
+      </div>
+
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-3">
+          <label>
+            基础数据名称：
+          </label>
+        </div>
+        <div class="ui-grid-col-5">
+          <input pInputText formControlName="basedataName" [(ngModel)]="basedatadescribeTemp.basedataName" placeholder="必填"/>
+        </div>
+        <div class="ui-grid-col-4">
+          <div class="ui-message ui-messages-error ui-corner-all" *ngIf="!basedatadescribeForm.controls['basedataName'].valid && basedatadescribeForm.controls['basedataName'].dirty">
+            <i class="fa fa-close"></i>
+            请输入基础数据名称
+          </div>
+        </div>
+      </div>
+
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-3">
+          <label>
+            标准体系：
+          </label>
+        </div>
+        <div class="ui-grid-col-5">
+          <input pInputText formControlName="standardsystem" [(ngModel)]="basedatadescribeTemp.standardsystem" />
+        </div>
+      </div>
+
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-3">
+          <label>
+            标准编码：
+          </label>
+        </div>
+        <div class="ui-grid-col-5">
+          <input pInputText formControlName="standardcode" [(ngModel)]="basedatadescribeTemp.standardcode"/>
+        </div>
+      </div>
+
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-3">
+          <label>
+            标准代码修改描述：
+          </label>
+        </div>
+        <div class="ui-grid-col-5">
+          <input pInputText formControlName="describe"  [(ngModel)]="basedatadescribeTemp.describe"/>
+        </div>
+      </div>
+    </div>
+    <div class="ui-dialog-buttonpane ui-helper-clearfix">
+      <button type="button" pButton icon="fa-close" (click)="cancel()" label="取消"></button>
+      <button type="submit" pButton icon="fa-check" [disabled]="!basedatadescribeForm.valid" label="保存"></button>
+    </div>
+  </form>
+
+</p-dialog>
+
+
+<p-dialog [(header)]="title" [(visible)]="infoDisplayDialog" [responsive]="true" showEffect="fade" [modal]="true" [width]="500" [height]="300">
+  <form [formGroup]="basedataInfoForm" (ngSubmit)="saveInfo()">
+    <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid">
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-3">
+          <label>
+            项目代码：
+          </label>
+        </div>
+        <div class="ui-grid-col-5">
+          <input pInputText formControlName="id" [(ngModel)]="basedataInfoTemp.id" type="hidden">
+          <input pInputText formControlName="itemCode" [(ngModel)]="basedataInfoTemp.itemCode" placeholder="必填"/>
+        </div>
+        <div class="ui-grid-col-4">
+          <div class="ui-message ui-messages-error ui-corner-all" *ngIf="!basedataInfoForm.controls['itemCode'].valid && basedataInfoForm.controls['itemCode'].dirty">
+            <i class="fa fa-close"></i>
+            请输入项目代码：
+          </div>
+        </div>
+      </div>
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-3">
+          <label>
+            项目名称：
+          </label>
+        </div>
+        <div class="ui-grid-col-5">
+          <input pInputText formControlName="itemName" [(ngModel)]="basedataInfoTemp.itemName" placeholder="必填"/>
+        </div>
+        <div class="ui-grid-col-4">
+          <div class="ui-message ui-messages-error ui-corner-all" *ngIf="!basedataInfoForm.controls['itemName'].valid && basedataInfoForm.controls['itemName'].dirty">
+            <i class="fa fa-close"></i>
+            请输入项目名称：
+          </div>
+        </div>
+      </div>
+
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-3">
+          <label>
+            拼音码：
+          </label>
+        </div>
+        <div class="ui-grid-col-5">
+          <input pInputText formControlName="itemPym" [(ngModel)]="basedataInfoTemp.itemPym" />
+        </div>
+        <div class="ui-grid-col-4">
+
+          </div>
+      </div>
+    </div>
+    <div class="ui-dialog-buttonpane ui-helper-clearfix">
+      <button type="button" pButton icon="fa-close" (click)="cancelInfo()" label="取消"></button>
+      <button type="submit" pButton icon="fa-check" [disabled]="!basedataInfoForm.valid"  label="保存"></button>
+    </div>
+  </form>
+</p-dialog>

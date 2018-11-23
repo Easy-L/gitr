@@ -1,0 +1,87 @@
+<p-growl [value]="msgs"></p-growl>
+<p-confirmDialog [acceptLabel]="'是'" [rejectLabel]="'否'"></p-confirmDialog>
+
+<p-panel>
+  <p-header ngClass="n">
+    <button pButton type="button" icon="fa-plus" label="新增" class="ui-button-info" (click)="new()"></button>
+    <button pButton type="button" icon="fa-cloud-upload" label="发布" class="ui-button-success" (click)="publish()"></button>
+  </p-header>
+
+  <p-table [value]="metasetpublishlist"
+           [rows]="20"
+           [paginator]="true"
+           [pageLinks]="5"
+           [totalRecords]="metasetpublishtotalnumber"
+           [lazy]="true"
+           [autoLayout]=true
+           [(selection)]="selectpublish"
+           selectionMode="single"
+           (onLazyLoad)="loadLazy($event)">
+    <!--dataKey=""-->
+    <ng-template pTemplate="header" >
+      <tr>
+        <!--<th style="width:1%">序号</th>-->
+        <th style="width:2%">版本号</th>
+        <th style="width:3.5%">发布人</th>
+        <th style="width:5%">发布时间</th>
+        <th style="width:20%">版本描述</th>
+        <th style="width:2%">是否发布</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-publish let-rowIndex="rowIndex">
+      <tr [pSelectableRow]="publish" >
+        <td hidden="hidden">{{publish.id}}</td>
+        <td>{{publish.version}}</td>
+        <td>{{publish.publishName}}</td>
+        <td>{{publish.publishTime}}</td>
+        <td>{{publish.descripe}}</td>
+        <td [ngSwitch]="publish.flag">
+          <div *ngSwitchCase="1">是</div>
+          <div *ngSwitchCase="0">否</div>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="paginatorright">
+      总共{{metasetpublishtotalnumber}}条记录
+    </ng-template>
+    <ng-template pTemplate="emptymessage" >
+      <tr >
+        <td [attr.colspan]="5">
+          没有数据
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</p-panel>
+
+<p-dialog header="新增版本号" [(visible)]="newpublishdialog"
+          [responsive]="true" showEffect="fade" [modal]="true"
+          [width]="500" [height]="400"
+          (onHide)="onHide($event)">
+  <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid">
+    <div class="ui-grid-row">
+      <div class="ui-grid-col-3">
+        <label>
+          版本号:
+        </label>
+      </div>
+      <div class="ui-grid-col-5">
+        <input pInputText type="text" [(ngModel)]="publishcondition.version" disabled="true"/>
+      </div>
+    </div>
+    <div class="ui-grid-row">
+      <div class="ui-grid-col-3">
+        <label>
+          版本描述:
+        </label>
+      </div>
+      <div class="ui-grid-col-5">
+      <textarea [rows]="5" [cols]="22" pInputTextarea autoResize="autoResize"
+                [(ngModel)]="publishcondition.descripe"></textarea>
+      </div>
+    </div>
+  </div>
+  <div class="ui-dialog-buttonpane ui-helper-clearfix">
+    <button type="submit" pButton icon="fa-check" (click)="save()" label="保存"></button>
+  </div>
+</p-dialog>

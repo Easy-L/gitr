@@ -1,0 +1,290 @@
+<p-growl [value]="msgs" ></p-growl>
+
+<div class="ui-g">
+    <div class="ui-g-3">
+        <p-panel>
+          <p-header>
+            <h3>元数据类型</h3>
+          </p-header>
+          <button pButton type="button" icon="fa-plus" label="新增" class="ui-button-info" (click)="dialog(false)"></button>
+          <button pButton type="button" icon="fa-edit" label="编辑" class="ui-button-success" (click)="dialog(true)"></button>
+          <button pButton type="button" icon="fa-trash-o" label="删除" class="ui-button-danger" (click)="deleteNode()"></button>
+          <!-- 搜索框 -->
+          <div class="ui-inputgroup"
+               style="margin-top: 10px;margin-bottom:10px">
+            <input type="text"
+                   style="width: 200px"
+                   pInputText placeholder="请输入元数据名称" [(ngModel)]="searchconditon" >
+            <button pButton type="button" icon="fa-superpowers" class="ui-button-secondary" (click)="onsearchconditon()"></button>
+          </div>
+            <div>
+            <p-tree class="ui-fluid" [value]="metadatatree"
+                    [style]="{'height':'700px'}"
+                    selectionMode="single"
+                    [(selection)]="selectedMetadataClass"
+                    (onNodeExpand)="onNodeExpand($event)"
+                    (onNodeSelect)="onNodeSelect($event)">
+            </p-tree>
+            </div>
+        </p-panel>
+    </div>
+    <div class="ui-g-9">
+        <p-panel>
+          <p-header>
+            <h3>元数据定义</h3>
+          </p-header>
+            <button pButton type="button" icon="fa-plus" label="新增" class="ui-button-info" (click)="dialogDetail(false)"></button>
+            <button pButton type="button" icon="fa-edit" label="编辑" class="ui-button-success" (click)="dialogDetail(true)"></button>
+            <button pButton type="button" icon="fa-trash-o" label="删除" class="ui-button-danger" (click)="deleteDetail()"></button>
+          <div style="margin-top: 10px">
+          <p-dataTable [value]="metadatadetails"
+                         [(selection)]="selectMetaDataDetails"
+                         [rows]="28"
+                         [paginator]="true"
+                         [pageLinks]="5"
+                         [rowsPerPageOptions]="[10,20,30]"
+                         [totalRecords]="metadatadetails.length"
+                         dataKey="id"
+                         [headerCheckboxToggleAllPages]="true"
+                         [emptyMessage]="'没有数据'">
+                <p-column [style]="{'width':'38px'}" selectionMode="multiple"></p-column>
+                <p-column field="metacode" header="标识符" [style]="{'text-align':'center'}"></p-column>
+                <p-column field="typecode" header="小类编码" [style]="{'text-align':'center'}"></p-column>
+                <p-column field="metaname" header="标识符名称" [style]="{'text-align':'center'}"></p-column>
+                <p-column field="metadefine" header="标识符定义" [style]="{'text-align':'center'}"></p-column>
+                <p-column field="symbolcode" header="数据格式" [style]="{'text-align':'center'}"></p-column>
+                <p-column field="dataformat" header="表示格式" [style]="{'text-align':'center'}"></p-column>
+                <p-column field="minrange" header="最小" [style]="{'text-align':'center'}"></p-column>
+                <p-column field="maxrange" header="最大" [style]="{'text-align':'center'}"></p-column>
+                <p-column field="prec" header="小数位" [style]="{'text-align':'center'}"></p-column>
+                <p-column field="unitmeasurement" header="计量单位" [style]="{'text-align':'center'}"></p-column>
+                <p-column field="datasource" header="数据来源说明" [style]="{'text-align':'center'}"></p-column>
+                <p-column field="standardcode" header=标准编码 [style]="{'text-align':'center'}"></p-column>
+            </p-dataTable>
+          </div>
+        </p-panel>
+    </div>
+</div>
+
+<p-dialog [(header)]="header" [(visible)]="displayDialog"
+          [responsive]="true" showEffect="fade" [modal]="true"
+          [width]="400" [height]="400"
+          (onHide)="onHide($event)">
+    <form [formGroup]="metadataclassForm" >
+      <!--(ngSubmit)="onSubmit(metadataclassForm.value)"-->
+      <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid">
+        <div class="ui-grid-row">
+          <div class="ui-grid-col-3">
+            <label>
+              父类级别：
+            </label>
+          </div>
+          <div class="ui-grid-col-9">
+            <p-dropdown formControlName="typelevel"
+                        [options]="metadataparent"
+                        [autoDisplayFirst]=false
+                        showClear="true"
+                        [style]="{'width':'90%'}"  [filter]="true"
+                        [scrollHeight]="400"
+                        [(ngModel)]="metadataclasstemp.parentid">
+              <ng-template let-metadata pTemplate="selectedItem">
+                <img src="" style="width:16px;vertical-align:middle" />
+                <span style="vertical-align:middle">{{metadata.label}}</span>
+              </ng-template>
+            </p-dropdown>
+          </div>
+        </div>
+        <div class="ui-grid-row">
+          <div class="ui-grid-col-3">
+            <label>
+              类别编码：
+            </label>
+          </div>
+          <div class="ui-grid-col-9">
+            <input pInputText type="hidden" formControlName="id" [(ngModel)]="metadataclasstemp.id" />
+            <input pInputText formControlName="typecode" style="width: 90%;"
+                   [(ngModel)]="metadataclasstemp.typecode" placeholder="必填">
+          </div>
+        </div>
+
+        <div class="ui-grid-row">
+          <div class="ui-grid-col-3">
+            <label>
+              类别名称：
+            </label>
+          </div>
+          <div class="ui-grid-col-9">
+            <input pInputText style="width: 90%;"
+                   formControlName="typename" [(ngModel)]="metadataclasstemp.typename" placeholder="必填"/>
+          </div>
+        </div>
+        <div class="ui-grid-row">
+          <div class="ui-grid-col-3">
+            <label>
+             类别描述：
+            </label>
+          </div>
+          <div class="ui-grid-col-9">
+            <textarea [rows]="5" [cols]="30" pInputTextarea autoResize="autoResize" formControlName="memo" [(ngModel)]="metadataclasstemp.memo"></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix">
+        <button type="button" pButton icon="fa-close" (click)="cancel()" label="取消"></button>
+        <button type="button" pButton icon="fa-check" [disabled]="!metadataclassForm.valid" (click)="save()" label="保存"></button>
+      </div>
+    </form>
+  </p-dialog>
+
+<p-confirmDialog header="删除确认"
+                 [acceptLabel]="'是'"  [rejectLabel]="'否'"
+                 icon="fa fa-question-circle" width="425"></p-confirmDialog>
+
+<p-dialog [(header)]="header" [(visible)]="displayDetailDialog"
+          [responsive]="true" showEffect="fade" [modal]="true"
+          [width]="600" [height]="600"
+          (onHide)="onHide($event)">
+  <form [formGroup]="metadataDetailForm">
+    <!--(ngSubmit)="onSubmit(metadataDetailForm.value)"-->
+    <div class="ui-grid ui-grid-responsive ui-grid-pad ui-fluid">
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-2">
+          <label>
+            标识符：
+          </label>
+        </div>
+        <div class="ui-grid-col-4">
+          <input pInputText type="hidden" formControlName="id" [(ngModel)]="metadatadetailtemp.id" />
+          <input pInputText formControlName="metacode" [(ngModel)]="metadatadetailtemp.metacode" placeholder="必填"/>
+        </div>
+        <div class="ui-grid-col-2">
+          <label>
+            名称：
+          </label>
+        </div>
+        <div class="ui-grid-col-4">
+          <input pInputText formControlName="metaname" [(ngModel)]="metadatadetailtemp.metaname" placeholder="必填"/>
+        </div>
+      </div>
+
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-2">
+          <label>
+            计量单位：
+          </label>
+        </div>
+        <div class="ui-grid-col-4">
+          <input pInputText formControlName="unitmeasurement" [(ngModel)]="metadatadetailtemp.unitmeasurement" />
+        </div>
+        <div class="ui-grid-col-2">
+          <label>
+            数据类型：
+          </label>
+        </div>
+        <div class="ui-grid-col-4">
+          <p-dropdown formControlName="symbolcode"
+                      [options]="datatypedropdowns"
+                      [style]="{'width':'172px'}"
+                      [(ngModel)]="metadatadetailtemp.symbolcode" >
+          </p-dropdown>
+        </div>
+      </div>
+
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-2">
+          <label>
+            表示格式：
+          </label>
+        </div>
+        <div class="ui-grid-col-4">
+          <p-dropdown [options]="dataformat"
+                      formControlName="dataformat"
+                      [(ngModel)]="metadatadetailtemp.dataformat"
+                      [style]="{'width':'172px'}"></p-dropdown>
+        </div>
+        <div class="ui-grid-col-2">
+          <label>
+            有无标准代码：
+          </label>
+        </div>
+        <div class="ui-grid-col-4">
+          <p-toggleButton [(ngModel)]="checked" [ngModelOptions]="{standalone: true}" (onChange)="onchangeCheck($event)"></p-toggleButton>
+        </div>
+      </div>
+
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-2">
+          <label>
+            标准编码：
+          </label>
+        </div>
+        <div class="ui-grid-col-4">
+          <p-dropdown [options]="standcode"
+                      formControlName="standardcode"
+                      [(ngModel)]="metadatadetailtemp.standardcode"
+                      [style]="{'width':'172px'}"></p-dropdown>
+          <!--<input pInputText [disabled]="disablestandcode" formControlName="standardcode" [(ngModel)]="metadatadetailtemp.standardcode" />-->
+        </div>
+        <div class="ui-grid-col-2">
+          <label>
+            小数位：
+          </label>
+        </div>
+        <div class="ui-grid-col-4">
+          <p-spinner size="30"
+                     formControlName="prec" [(ngModel)]="metadatadetailtemp.prec"
+                     [min]="0" [max]="100">
+          </p-spinner>
+        </div>
+      </div>
+
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-2">
+          <label>
+            最大值：
+          </label>
+        </div>
+        <div class="ui-grid-col-4">
+          <p-spinner size="30"
+                     formControlName="maxrange" [(ngModel)]="metadatadetailtemp.maxrange">
+          </p-spinner>
+        </div>
+        <div class="ui-grid-col-2">
+          <label>
+            最小值：
+          </label>
+        </div>
+        <div class="ui-grid-col-4">
+          <p-spinner size="30"
+                     formControlName="minrange" [(ngModel)]="metadatadetailtemp.minrange">
+          </p-spinner>
+        </div>
+      </div>
+
+      <div class="ui-grid-row">
+        <div class="ui-grid-col-2">
+          <label>
+            定义描述：
+          </label>
+        </div>
+        <div class="ui-grid-col-4">
+          <textarea [rows]="5" [cols]="21" pInputTextarea autoResize="autoResize" formControlName="metadefine" [(ngModel)]="metadatadetailtemp.metadefine" ></textarea>
+        </div>
+        <div class="ui-grid-col-2">
+          <label>
+            数据来源说明:
+          </label>
+        </div>
+        <div class="ui-grid-col-4">
+          <textarea [rows]="5" [cols]="21" pInputTextarea autoResize="autoResize" formControlName="datasource" [(ngModel)]="metadatadetailtemp.datasource" ></textarea>
+        </div>
+      </div>
+
+    </div>
+    <div class="ui-dialog-buttonpane ui-helper-clearfix">
+      <button type="button" pButton icon="fa-close" (click)="cancel()" label="取消"></button>
+      <button type="button" pButton icon="fa-check" [disabled]="!metadataDetailForm.valid" (click)="saveDetail()" label="保存"></button>
+    </div>
+  </form>
+</p-dialog>
+

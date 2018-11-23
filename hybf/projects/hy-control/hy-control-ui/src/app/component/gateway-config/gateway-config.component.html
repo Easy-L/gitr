@@ -1,0 +1,139 @@
+<p-growl [value]="msgs"></p-growl>
+<div class="ui-g">
+  <div class="ui-g-4">
+    <p-treeTable [value]="nodereglist"
+                 selectionMode="single"
+                 (onNodeSelect)="onNodeSelect($event)"
+                 [(selection)]="selectednodereg">
+      <p-column header="节点名称" [style]="{'text-align':'left'}">
+        <ng-template let-col let-node="rowData" pTemplate="body">
+          <i class="fa fa-circle" aria-hidden="true" *ngIf="node.data.status=='online'" style="color: #289973"></i>
+          <i class="fa fa-circle" aria-hidden="true" *ngIf="node.data.status=='offline'" style="color: #fc0a0a"></i>
+          {{node.data.name}}
+        </ng-template>
+      </p-column>
+    </p-treeTable>
+  </div>
+  <div class="ui-g-8">
+    <div *ngIf="showextraconfiglist">
+    <p-card>
+      <p-toolbar>
+        <button type="button" pButton icon="fa-plus" class="ui-button-info"
+                (click)="addextraconfig()" label="新增作业配置"></button>
+        <button type="button" pButton icon="fa-cloud-upload" class="ui-button-success"  label="发送作业配置"
+                (click)="publishsaveconfig()"></button>
+      </p-toolbar>
+
+      <p-table [value]="extraconfiglist"
+               [rows]="10"
+               [style]="{'margin-top':'10px'}"
+               [paginator]="true"
+               dataKey="id"
+               [lazy]="true"
+               [(selection)]="selectextraconfig"
+               selectionMode="single"
+               (onLazyLoad)="loadExtraConfig($event)">
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 5%">序号</th>
+            <th>抽取名称</th>
+            <th>描述</th>
+            <th>日期</th>
+            <th>来源数据库</th>
+            <th>到数据库</th>
+            <th>抽取数量</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-extraconfig let-rowIndex="rowIndex">
+          <tr [pSelectableRow]="extraconfig">
+            <td>{{rowIndex+1}}</td>
+            <td>{{extraconfig.configname}}</td>
+            <td>{{extraconfig.descripe}}</td>
+            <td>{{extraconfig.configDate}}</td>
+            <td>{{extraconfig.fromdb}}</td>
+            <td>{{extraconfig.todb}}</td>
+            <td>{{extraconfig.extraNumber}}</td>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="paginatorleft">
+        </ng-template>
+        <ng-template pTemplate="paginatorright">
+          总共{{extraconfiglist.length}}条记录
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td [attr.colspan]="7">
+              没有数据
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </p-card>
+    </div>
+
+    <div *ngIf="showaddextraconfig">
+    <p-card>
+      <p-toolbar>
+        <button type="button" id="buttonid" pButton icon="fa-save" class="ui-button-success"
+                (click)="saveextraconfig()" label="保存"></button>
+        <button type="button" pButton icon="fa-mail-reply" class="ui-button-info"
+                (click)="returnlist()" label="返回"></button>
+        <button type="button" pButton icon="fa-cloud-upload" class="ui-button-success"  label="发送作业配置"
+                (click)="publishconfig()"></button>
+      </p-toolbar>
+      步骤名:<input pInputText type="text"  [(ngModel)]="configname"/>
+      <p-dropdown [options]="nodedbs"
+                  [autoDisplayFirst]=false
+                  (onChange)="onShowTables($event)"
+                  placeholder="请选择来源数据库"
+                  [style]="{'width':'150px'}"  [filter]="true"
+                  [scrollHeight]="400"
+                  [(ngModel)]="fromdb">
+      </p-dropdown>
+      <p-dropdown [options]="nodedbs"
+                  [autoDisplayFirst]=false
+                  placeholder="请选择目标数据库"
+                  [style]="{'width':'150px'}"  [filter]="true"
+                  [scrollHeight]="400"
+                  [(ngModel)]="todb">
+      </p-dropdown>
+      抽取数量:<input type="text" pInputText [(ngModel)]="extrasize" >
+      描述:<input type="text" pInputText [(ngModel)]="descpripe" >
+      <p-table [value]="nodetables"
+               [rows]="100"
+               [style]="{'margin-top':'10px'}"
+               [paginator]="true"
+               [pageLinks]="5"
+               [(selection)]="selectnodetables"
+               dataKey="id"
+               selectionMode="multiple">
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 5%">序号</th>
+            <th>表名</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-nodedbtable let-rowIndex="rowIndex">
+          <tr [pSelectableRow]="nodedbtable"  [pSelectableRowIndex]="rowIndex">
+            <td>{{rowIndex+1}}</td>
+            <td>{{nodedbtable.tablecode}}</td>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="paginatorright">
+          总共{{nodetables.length}}条记录
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td [attr.colspan]="2">
+              没有数据
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+
+    </p-card>
+    </div>
+  </div>
+</div>

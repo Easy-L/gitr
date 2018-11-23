@@ -1,0 +1,55 @@
+[
+  {
+    "name": "标准管理",
+    "icon": "fa-database",
+    "children": [
+      {
+        "name": "标准字典管理",
+        "link": "basedatadescribe"
+      },
+      {
+        "name": "元数据管理",
+        "link": "metadata"
+      },
+      {
+        "name": "数据集管理",
+        "link": "metaSet"
+      },
+      {
+        "name": "数据库表管理",
+        "link": "tabledata"
+      }
+    ]
+  },
+  {
+    "name": "网关管理",
+    "icon": "fa-cog",
+    "children": [
+      {
+        "name": "网关节点注册",
+        "link": "gatewayregister"
+      },
+      {
+        "name": "网关作业配置管理",
+        "link": "gatewayconfig"
+      },
+      {
+        "name": "网关表结构修改异常",
+        "link": "modifytableinfoexception"
+      }
+    ]
+  },{
+  "name": "发布管理",
+  "icon": "fa-cloud-upload",
+  "children": [
+    {
+      "name": "数据校验表发布",
+      "link": "DatacheckPublishComponent"
+    },
+    {
+      "name": "数据集发布",
+      "link": "metasetpublishcomponent"
+    }
+  ]
+}
+]

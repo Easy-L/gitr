@@ -1,0 +1,41 @@
+option java_package = "com.hyjk.parser";
+option java_outer_classname = "InterchangeProtocol";
+
+message Head{
+    required string id=1;
+	required string from=2;
+	required string to=3;
+	required string sendTime=4;
+    required string type=5;
+    required string text=6;
+    required string describe=7;
+
+
+}
+
+message Body{
+   required string data=1;
+}
+
+message Message{
+    required Head head=1;
+    required Body body=2;
+}
+
+message InterchangeProtocolProfile {
+    required Message message=1;
+    //服务端地址
+    //required string serverAddress=1;
+    //客户端地址
+    //required string clientAddress=2;
+    //封装数据类型
+    //required string mediaType = 3;
+    //消息类型
+    //required string type = 4;
+    //日期
+    //required string date = 5;
+    //描述
+    //required string describe=6;
+    //数据
+    //required Data data=7;
+}

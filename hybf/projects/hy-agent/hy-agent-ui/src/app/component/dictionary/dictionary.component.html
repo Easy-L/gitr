@@ -1,0 +1,413 @@
+<p-growl [value]="msgs"></p-growl>
+<p-confirmDialog [acceptLabel]="'是'" [rejectLabel]="'否'"></p-confirmDialog>
+
+  <p-tabView>
+    <p-tabPanel header="基础字典编码"  >
+      <ng-template pTemplate="content">
+      <div class="ui-g">
+        <div class="ui-g-6">
+          <p-toolbar>
+                  <div class="ui-toolbar-group-left">
+                    <span class="ui-inputgroup-addon"><i class="fa fa-search"></i></span>
+                    <input #gd type="text" pInputText placeholder="根据标准代码查询" [(ngModel)]="Basedatadescribe.basedataCode">
+                    <button pButton type="button" icon="fa-search" label="查询" (click)="loadBaseDecribeListLazy()"></button>
+                  </div>
+          </p-toolbar>
+            <p-table [value]="basedatadescribes"
+                     [rows]="20"
+                     (onRowSelect)="onRowSelect2($event)"
+                     [paginator]="true"
+                     [pageLinks]="5"
+                     [dataKey]="id"
+                     [lazy]="true"
+                     [autoLayout]=true
+                     [totalRecords]="basedatadescribetotalnumber"
+                     (onLazyLoad)="loadBaseDecribeListLazy($event)"
+                     selectionMode="single">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th style="width:2%">序号</th>
+                  <th style="width:4%">标准代码</th>
+                  <th style="width:4%">标准代码名称</th>
+                  <th style="width:4%">修改描述</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-medic let-rowIndex="rowIndex">
+                <tr [pSelectableRow]="medic">
+                  <td>{{rowIndex+1}}</td>
+                  <td>{{medic.basedataCode}}</td>
+                  <td>{{medic.basedataName}}</td>
+                  <td>{{medic.describe}}</td>
+                </tr>
+              </ng-template>
+
+              <ng-template pTemplate="paginatorleft">
+              </ng-template>
+              <ng-template pTemplate="paginatorright">
+                总共{{basedatadescribetotalnumber}}条记录
+              </ng-template>
+              <ng-template pTemplate="emptymessage">
+                <tr>
+                  <td [attr.colspan]="4">
+                    没有数据
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+        </div>
+        <div class="ui-g-6">
+            <p-toolbar>
+              <div class="ui-toolbar-group-left">
+                <span class="ui-inputgroup-addon"><i class="fa fa-search"></i></span>
+                <input  type="text" pInputText placeholder="类别查询条件" (input)="bi.filterGlobal($event.target.value, 'contains')">
+                <button pButton type="button" icon="fa-search" label="查询" ></button>
+              </div>
+            </p-toolbar>
+          <p-table #bi [value]="basedatainfos"
+                   [rows]="20"
+                   [paginator]="true"
+                   [pageLinks]="5"
+                   [autoLayout]=true
+                   [dataKey]="id"
+                   [globalFilterFields]="['itemName']"
+                   [totalRecords]="Basedatainfototalnumber"
+                   selectionMode="single">
+            <ng-template pTemplate="header">
+              <tr>
+                <th style="width:2%">序号</th>
+                <th style="width:4%">项目名称</th>
+                <th style="width:4%">项目代码</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-medic let-rowIndex="rowIndex">
+              <tr [pSelectableRow]="medic">
+                <td>{{rowIndex+1}}</td>
+                <td>{{medic.itemName}}</td>
+                <td>{{medic.itemCode}}</td>
+              </tr>
+            </ng-template>
+
+            <ng-template pTemplate="paginatorleft">
+            </ng-template>
+            <ng-template pTemplate="paginatorright">
+              总共{{Basedatainfototalnumber}}条记录
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td [attr.colspan]="3">
+                  没有数据
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </div>
+      </ng-template>
+    </p-tabPanel>
+    <p-tabPanel header="药品编码" [selected]="true">
+      <ng-template pTemplate="content">
+        <p-toolbar >
+          <div class="ui-toolbar-group-left">
+            药品编码：<input type="text" pInputText [(ngModel)]="medic.medicode">
+            &nbsp;&nbsp;
+            药品通用名：<input type="text" pInputText [(ngModel)]="medic.mediname">
+            &nbsp;&nbsp;
+            国药准字号：<input type="text" pInputText [(ngModel)]="medic.approvenum">
+            <button pButton type="button" icon="fa-search" label="精确查询" (click)="loadMedicListLazy()"></button>
+          </div>
+          <div class="ui-toolbar-group-right">
+            <span class="ui-inputgroup-addon" ><i class="fa fa-search"></i></span>
+            <input type="text" pInputText placeholder="请输入文本进行查询" [(ngModel)]="medic.medicode">
+            <button pButton type="button" icon="fa-search" label="模糊查询"  (click)="loadMedicListLazy1()"></button>
+          </div>
+        </p-toolbar>
+        <div class="ui-g">
+          <p-table #yp [value]="mediclist"
+                   [rows]="20"
+                   [paginator]="true"
+                   [pageLinks]="5"
+                   [dataKey]="mediid"
+                   [lazy]="true"
+                   [autoLayout]=true
+                   [totalRecords]="medictotalnumber"
+                   (onLazyLoad)="loadMedicListLazy($event)"
+                   selectionMode="single">
+            <!--[rowsPerPageOptions]="[10,15,25]"  [scrollable]="true" scrollHeight="500px"   autoLayout="true" -->
+            <ng-template pTemplate="header">
+              <tr>
+                <th style="width:4%">序号</th>
+                <th style="width:7%">药品编码</th>
+                <th style="width:7%">药品通用名</th>
+                <th style="width:7%">商品名</th>
+                <th style="width:7%">国药准字号</th>
+                <th style="width:7%">生产企业</th>
+                <th style="width:7%">规格</th>
+                <th style="width:7%">规格单位</th>
+                <th style="width:7%">规格拆分系数</th>
+                <th style="width:5%">包装单位</th>
+                <th style="width:5%">药品类型</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-medic let-rowIndex="rowIndex">
+              <tr>
+                <td>{{rowIndex+1}}</td>
+                <td>{{medic.medicode}}</td>
+                <td>{{medic.mediname}}</td>
+                <td>{{medic.goodsname}}</td>
+                <td>{{medic.approvenum}}</td>
+                <td>{{medic.productenterprisename}}</td>
+                <td>{{medic.std}}</td>
+                <td>{{medic.stdunit}}</td>
+                <td>{{medic.stdsplitcoefficient}}</td>
+                <td>{{medic.medipackingunit}}</td>
+                <td [ngSwitch]="medic.meditype">
+                  <div *ngSwitchCase="1">化学药</div>
+                  <div *ngSwitchCase="2">生物制剂</div>
+                  <div *ngSwitchCase="3">中成药</div>
+                  <div *ngSwitchCase="4">中药材</div>
+                  <div *ngSwitchCase="5">中药饮片</div>
+                  <div *ngSwitchCase="6">中药配方颗粒</div>
+                  <div *ngSwitchCase="7">中药超微饮片</div>
+                  <div *ngSwitchCase="8">中药超微配方颗粒</div>
+                </td>
+              </tr>
+            </ng-template>
+
+            <ng-template pTemplate="paginatorleft">
+            </ng-template>
+            <ng-template pTemplate="paginatorright">
+              总共{{medictotalnumber}}条记录
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td [attr.colspan]="11">
+                  没有数据
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+      </div>
+      </ng-template>
+    </p-tabPanel>
+    <p-tabPanel header="疾病编码" >
+      <ng-template pTemplate="content">
+        <p-toolbar >
+          <div class="ui-toolbar-group-left">
+            疾病编码：<input type="text" pInputText [(ngModel)]="icd.icdcode">
+            &nbsp;&nbsp;
+            疾病名称：<input type="text" pInputText [(ngModel)]="icd.icdname">
+            <button pButton type="button" icon="fa-search" label="精确查询" (click)="loadicdListLazy()"></button>
+          </div>
+          <div class="ui-toolbar-group-right">
+            <span class="ui-inputgroup-addon" ><i class="fa fa-search"></i></span>
+            <input type="text" pInputText placeholder="请输入文本进行查询"  [(ngModel)]="icd.icdcode">
+            <button pButton type="button" icon="fa-search" label="模糊查询" (click)="loadicdListLazy1()"></button>
+          </div>
+        </p-toolbar>
+        <div class="ui-g">
+          <p-table [value]="icdlist"
+                   [rows]="20"
+                   [paginator]="true"
+                   [pageLinks]="5"
+                   [dataKey]="id"
+                   [autoLayout]=true
+                   [lazy]="true"
+                   [totalRecords]="icdtotalnumber"
+                   (onLazyLoad)="loadicdListLazy($event)"
+                   selectionMode="single">
+            <!--[rowsPerPageOptions]="[10,15,25]"  [scrollable]="true" scrollHeight="500px"   autoLayout="true" -->
+            <ng-template pTemplate="header">
+              <tr>
+                <th style="width:1.5%">序号</th>
+                <th style="width:4%">疾病编码</th>
+                <th style="width:4%">疾病名称</th>
+                <th style="width:4%">疾病类别</th>
+                <th style="width:4%">性别限制</th>
+                <th style="width:4%">疗效限制</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-icd let-rowIndex="rowIndex">
+              <tr>
+                <td>{{rowIndex+1}}</td>
+                <td>{{icd.icdcode}}</td>
+                <td>{{icd.icdname}}</td>
+                <td [ngSwitch]="icd.typecode">
+                  <div *ngSwitchCase="1">国际</div>
+                  <div *ngSwitchCase="2">中医</div>
+                </td>
+                <td>{{icd.sexlimit}}</td>
+                <td>{{icd.efficacylimit}}</td>
+              </tr>
+            </ng-template>
+
+            <ng-template pTemplate="paginatorleft">
+            </ng-template>
+            <ng-template pTemplate="paginatorright">
+              总共{{icdtotalnumber}}条记录
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td [attr.colspan]="6">
+                  没有数据
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </ng-template>
+    </p-tabPanel>
+    <p-tabPanel header="手术编码" >
+      <ng-template pTemplate="content">
+        <p-toolbar >
+          <div class="ui-toolbar-group-left">
+            手术编码：<input type="text" pInputText [(ngModel)]="icdoper.cmcode">
+            &nbsp;&nbsp;
+            手术名称：<input type="text" pInputText [(ngModel)]="icdoper.cmname">
+            <button pButton type="button" icon="fa-search" label="精确查询" (click)="loadicdoperListLazy()" ></button>
+          </div>
+          <div class="ui-toolbar-group-right">
+            <span class="ui-inputgroup-addon" ><i class="fa fa-search"></i></span>
+            <input type="text" pInputText placeholder="请输入文本进行查询" [(ngModel)]="icdoper.cmcode">
+            <button pButton type="button" icon="fa-search" label="模糊查询" (click)="loadicdoperListLazy1()"></button>
+          </div>
+        </p-toolbar>
+        <div class="ui-g">
+          <p-table [value]="icdoperlist"
+                   [rows]="20"
+                   [paginator]="true"
+                   [pageLinks]="5"
+                   [dataKey]="cmid"
+                   [lazy]="true"
+                   [autoLayout]=true
+                   [totalRecords]="icdopertotalnumber"
+                   (onLazyLoad)="loadicdoperListLazy($event)"
+                   selectionMode="single">
+            <!--[rowsPerPageOptions]="[10,15,25]"  [scrollable]="true" scrollHeight="500px"   autoLayout="true" -->
+            <ng-template pTemplate="header">
+              <tr>
+                <th style="width:1.5%">序号</th>
+                <th style="width:4%">手术编码</th>
+                <th style="width:4%">手术名称</th>
+                <th style="width:4%">手术类别</th>
+                <th style="width:4%">手术分级</th>
+                <th style="width:4%">医院使用级别</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-icdoper let-rowIndex="rowIndex">
+              <tr>
+                <td>{{rowIndex+1}}</td>
+                <td>{{icdoper.cmcode}}</td>
+                <td>{{icdoper.cmname}}</td>
+                <td [ngSwitch]="icdoper.lb">
+                  <div *ngSwitchCase="1">手术操作</div>
+                  <div *ngSwitchCase="2">治疗性操作</div>
+                  <div *ngSwitchCase="3">诊断操作</div>
+                </td>
+                <td>{{icdoper.operationlevel}}</td>
+                <td [ngSwitch]="icdoper.hosplevel">
+                  <div *ngSwitchCase="1">一级医院</div>
+                  <div *ngSwitchCase="2">二级医院</div>
+                  <div *ngSwitchCase="3">三级医院</div>
+                  <div *ngSwitchCase="4">村卫生室</div>
+                </td>
+              </tr>
+            </ng-template>
+
+            <ng-template pTemplate="paginatorleft">
+            </ng-template>
+            <ng-template pTemplate="paginatorright">
+              总共{{icdopertotalnumber}}条记录
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td [attr.colspan]="6">
+                  没有数据
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </ng-template>
+    </p-tabPanel>
+    <p-tabPanel header="医疗服务项目编码" >
+      <ng-template pTemplate="content">
+        <p-toolbar >
+          <div class="ui-toolbar-group-left">
+            项目编码：<input type="text" pInputText [(ngModel)]="server.servercode" >
+            &nbsp;&nbsp;
+            项目名称：<input type="text" pInputText [(ngModel)]="server.servername">
+            <button pButton type="button" icon="fa-search" label="精确查询" (click)="loadserverListLazy()" ></button>
+          </div>
+          <div class="ui-toolbar-group-right">
+            <span class="ui-inputgroup-addon" ><i class="fa fa-search"></i></span>
+            <input type="text" pInputText placeholder="请输入文本进行查询" [(ngModel)]="server.servercode">
+            <button pButton type="button" icon="fa-search" label="模糊查询" (click)="loadserverListLazy1()"></button>
+          </div>
+        </p-toolbar>
+        <div class="ui-g">
+          <p-table #yp [value]="serverlist"
+                   [rows]="20"
+                   [paginator]="true"
+                   [pageLinks]="5"
+                   [dataKey]="serverid"
+                   [lazy]="true"
+                   [autoLayout]=true
+                   [totalRecords]="servertotalnumber"
+                   (onLazyLoad)="loadserverListLazy($event)"
+                   selectionMode="single">
+            <!--[rowsPerPageOptions]="[10,15,25]"  [scrollable]="true" scrollHeight="500px"   autoLayout="true" -->
+            <!--<ng-template pTemplate="colgroup" >-->
+            <!--<colgroup>-->
+            <!--<col  style="width:50px">-->
+            <!--<col  style="width:120px">-->
+            <!--<col  style="width:120px">-->
+            <!--<col  style="width:120px">-->
+            <!--<col  style="width:120px">-->
+            <!--<col  style="width:120px">-->
+            <!--<col  style="width:120px">-->
+            <!--<col  style="width:120px">-->
+            <!--<col  style="width:120px">-->
+            <!--<col  style="width:120px">-->
+            <!--<col  style="width:120px">-->
+            <!--</colgroup>-->
+            <!--</ng-template>-->
+            <ng-template pTemplate="header">
+              <tr>
+                <th style="width:1.5%">序号</th>
+                <th style="width:4%">项目编码</th>
+                <th style="width:4%">项目名称</th>
+                <th style="width:4%">项目内含</th>
+                <th style="width:4%">除外内容</th>
+                <th style="width:4%">计价单位</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-server let-rowIndex="rowIndex">
+              <tr>
+                <td>{{rowIndex+1}}</td>
+                <td>{{server.servercode}}</td>
+                <td>{{server.servername}}</td>
+                <td>{{server.content}}</td>
+                <td>{{server.excepted}}</td>
+                <td>{{server.unit}}</td>
+              </tr>
+            </ng-template>
+
+            <ng-template pTemplate="paginatorleft">
+            </ng-template>
+            <ng-template pTemplate="paginatorright">
+              总共{{servertotalnumber}}条记录
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td [attr.colspan]="6">
+                  没有数据
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </ng-template>
+    </p-tabPanel>
+  </p-tabView>
+
+

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="hy-agent-api" />
+        <module name="hy-agent-domain" />
+        <module name="hy-agent-services" />
+        <module name="hy-auth-api" />
+        <module name="hy-auth-domain" />
+        <module name="hy-auth-services" />
+        <module name="hy-control-api" />
+        <module name="hy-control-domain" />
+        <module name="hy-control-services" />
+        <module name="hy-core" />
+        <module name="hy-gate" />
+        <module name="hy-rocketmq" />
+        <module name="hy-test" />
+        <module name="hy-web" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="hy-agent" target="1.8" />
+      <module name="hy-agent-api" target="1.8" />
+      <module name="hy-agent-domain" target="1.8" />
+      <module name="hy-agent-services" target="1.8" />
+      <module name="hy-auth" target="1.8" />
+      <module name="hy-auth-api" target="1.8" />
+      <module name="hy-auth-domain" target="1.8" />
+      <module name="hy-auth-services" target="1.8" />
+      <module name="hy-control" target="1.8" />
+      <module name="hy-control-api" target="1.8" />
+      <module name="hy-control-domain" target="1.8" />
+      <module name="hy-control-services" target="1.8" />
+      <module name="hy-core" target="1.8" />
+      <module name="hy-gate" target="1.8" />
+      <module name="hy-rocketmq" target="1.8" />
+      <module name="hy-test" target="1.8" />
+      <module name="hy-web" target="1.8" />
+      <module name="hybf" target="1.8" />
+      <module name="modules" target="1.8" />
+      <module name="parent" target="1.8" />
+      <module name="projects" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

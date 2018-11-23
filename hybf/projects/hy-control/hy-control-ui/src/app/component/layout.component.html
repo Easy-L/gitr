@@ -1,0 +1,43 @@
+<div class="header" >
+  <div>
+    <p style="font-size:200%;color: white;padding:0px; margin:0px;">管控中心</p>
+    <a href="https://angular.cn/guide/glossary">
+      angular官网
+    </a>
+    <a href="https://www.primefaces.org/primeng">
+      primeng官网
+    </a>
+  </div>
+  <div style="margin-right: 40px">
+    <ul>
+      <li class="header-li">
+        <a class="header-item" (click)="loginOut()">
+          <i class="fa fa-sign-out"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="menu" [@menuState]="state">
+  <span class="text-error">{{menumsg}}</span>
+  <span class="fa fa-bars bars" (click)="changeMenuWidth()"></span>
+  <p-accordion [multiple]="true">
+    <p-accordionTab *ngFor="let item of menus ;let i=index;" [selected]="i == 1">
+      <p-header>
+        <i class="item-url fa" [ngClass]="item.icon" [@imgState]="state"></i>
+        <span>{{item.name}}</span>
+      </p-header>
+      <ul>
+        <div *ngIf="!pTooltipIf">,
+          <li *ngFor="let children of item.children"><a href="#/{{children.link}}" style="text-align:left;padding-left:20%" >{{children.name}}</a>
+          </li>
+        </div>
+      </ul>
+    </p-accordionTab>
+  </p-accordion>
+</div>
+
+<div class="router" style="margin-top: 15px" [@routerState]="state">
+  <router-outlet></router-outlet>
+</div>
