@@ -1,0 +1,6 @@
+com\zsgr\provider\service\impl\DemoServiceImpl.class
+com\zsgr\provider\config\DubboConfig.class
+com\zsgr\provider\service\impl\UserServiceImpl.class
+com\zsgr\provider\IamProviderApplication.class
+com\zsgr\provider\dao\UserMapper.class
+com\zsgr\provider\ServletInitializer.class
