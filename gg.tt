@@ -1,4 +1,4 @@
-git add ...
+igit add ...
 
 git commit -m ""
 
@@ -8,4 +8,6 @@ git fetch origin Easy-L/gitr
 
 git pull origin gitr
 
-git reset --hard origin/master
+git reset --hard orgin/master
+
+set 
